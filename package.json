@@ -1,0 +1,83 @@
+{
+  "name": "react-native-bootstrap-grid",
+  "version": "0.1.0",
+  "description": "The Bootstrap Grid for React Native",
+  "main": "index.js",
+  "author": "Chris Baker <mail.chris.baker@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/bakerface/react-native-bootstrap-grid#readme",
+  "keywords": [
+    "react",
+    "native",
+    "bootstrap",
+    "grid"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bakerface/react-native-bootstrap-grid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bakerface/react-native-bootstrap-grid/issues"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "test": "xo"
+  },
+  "xo": {
+    "extends": "xo-react",
+    "esnext": true,
+    "space": true,
+    "env": [
+      "browser"
+    ],
+    "ignores": [
+      "index.js"
+    ],
+    "rules": {
+      "array-bracket-spacing": [
+        "error",
+        "always"
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "ignoreRestSiblings": true,
+          "varsIgnorePattern": "^_"
+        }
+      ],
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
+      "react/forbid-component-props": [
+        "off"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "dependencies": {
+    "prop-types": "^15.5.10"
+  },
+  "devDependencies": {
+    "@storybook/react": "^3.1.3",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "eslint": "^4.0.0",
+    "eslint-config-xo-react": "^0.12.0",
+    "eslint-plugin-react": "^7.1.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-native": "^0.45.1",
+    "rollup": "^0.43.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-uglify": "^2.0.1",
+    "xo": "^0.18.2"
+  }
+}
