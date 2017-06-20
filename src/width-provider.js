@@ -25,10 +25,14 @@
 
 import ReactNative from 'react-native';
 
-class WidthProviderEventListener {
+class Native {
   constructor(fn) {
     this._fn = fn;
     this._onDimensionsChanged = this._onDimensionsChanged.bind(this);
+  }
+
+  static get() {
+    return ReactNative.Dimensions.get('window').width;
   }
 
   _onDimensionsChanged(dimensions) {
@@ -46,12 +50,46 @@ class WidthProviderEventListener {
   }
 }
 
-export default class WidthProvider {
+class Web {
+  constructor(fn) {
+    this._fn = fn;
+    this._onWindowResized = this._onWindowResized.bind(this);
+  }
+
   static get() {
-    return ReactNative.Dimensions.get('window').width;
+    return window.innerWidth;
+  }
+
+  _onWindowResized() {
+    this._fn(window.innerWidth);
+  }
+
+  add() {
+    window.addEventListener('resize', this._onWindowResized);
+    return this;
+  }
+
+  remove() {
+    window.removeEventListener('resize', this._onWindowResized);
+    return this;
+  }
+}
+
+export default class WidthProvider {
+  static isNative() {
+    return typeof ReactNative.Dimensions.addEventListener === 'function';
+  }
+
+  static getClass() {
+    return WidthProvider.isNative() ? Native : Web;
+  }
+
+  static get() {
+    return WidthProvider.getClass().get();
   }
 
   static addEventListener(fn) {
-    return new WidthProviderEventListener(fn).add();
+    const EventListener = WidthProvider.getClass();
+    return new EventListener(fn).add();
   }
 }

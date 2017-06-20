@@ -50,7 +50,9 @@ export default {
     commonjs({
       include: 'node_modules/**'
     }),
-    babel(),
+    babel({
+      presets: [ 'es2015-rollup', 'stage-3', 'react' ]
+    }),
     uglify()
   ]
 };
