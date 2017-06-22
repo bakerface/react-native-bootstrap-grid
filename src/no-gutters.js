@@ -23,8 +23,34 @@
 
 'use strict';
 
-export { default as Grid } from './grid';
-export { default as Container } from './container';
-export { default as Row } from './row';
-export { default as Column } from './column';
-export { default as NoGutters } from './no-gutters';
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export default class NoGutters extends React.Component {
+  getChildContext() {
+    const { gutter, ...grid } = this.context.grid;
+    return { grid };
+  }
+
+  render() {
+    return this.props.children;
+  }
+}
+
+NoGutters.displayName = 'NoGutters';
+
+NoGutters.propTypes = {
+  children: PropTypes.node
+};
+
+NoGutters.defaultProps = {
+  children: null
+};
+
+NoGutters.contextTypes = {
+  grid: PropTypes.object.isRequired
+};
+
+NoGutters.childContextTypes = {
+  grid: PropTypes.object.isRequired
+};
