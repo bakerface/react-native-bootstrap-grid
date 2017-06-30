@@ -1,6 +1,6 @@
 {
   "name": "react-native-bootstrap-grid",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "The Bootstrap Grid for React Native",
   "main": "index.js",
   "author": "Chris Baker <mail.chris.baker@gmail.com>",
@@ -20,6 +20,7 @@
     "url": "https://github.com/bakerface/react-native-bootstrap-grid/issues"
   },
   "scripts": {
+    "storybook": "start-storybook -p 9001 -c docs/storybook",
     "build": "rollup -c",
     "test": "xo"
   },
@@ -72,6 +73,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-native": "^0.45.1",
+    "react-native-web": "0.0.108",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
