@@ -28,10 +28,11 @@ import PropTypes from 'prop-types';
 import ReactNative from 'react-native';
 import getConfig from './get-config';
 import getFlex from './get-flex';
+import withGrid from './with-grid';
 
-export default class Row extends React.Component {
+class Row extends React.Component {
   getConfig(config) {
-    const { breakpoint, breakpoints } = this.context.grid;
+    const { breakpoint, breakpoints } = this.props.grid;
     return getConfig(breakpoints, breakpoint, config);
   }
 
@@ -42,9 +43,7 @@ export default class Row extends React.Component {
     };
   }
 
-  getGutterStyle() {
-    const { gutter } = this.context.grid;
-
+  getGutterStyle({ gutter }) {
     if (typeof gutter === 'undefined') {
       return [];
     }
@@ -83,11 +82,11 @@ export default class Row extends React.Component {
   }
 
   render() {
-    const { alignItems, justifyContent, style, ...props } = this.props;
+    const { alignItems, justifyContent, style, grid, ...props } = this.props;
 
     const styles = [].concat(
       this.getBaseStyle(),
-      this.getGutterStyle(),
+      this.getGutterStyle(grid),
       this.getContentJustification(justifyContent),
       this.getItemAlignment(alignItems),
       style
@@ -102,6 +101,7 @@ export default class Row extends React.Component {
 Row.displayName = 'Row';
 
 Row.propTypes = {
+  grid: PropTypes.object.isRequired,
   alignItems: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
@@ -119,6 +119,4 @@ Row.defaultProps = {
   style: []
 };
 
-Row.contextTypes = {
-  grid: PropTypes.object.isRequired
-};
+export default withGrid(Row);

@@ -28,10 +28,11 @@ import PropTypes from 'prop-types';
 import ReactNative from 'react-native';
 import getConfig from './get-config';
 import getFlex from './get-flex';
+import withGrid from './with-grid';
 
-export default class Column extends React.Component {
+class Column extends React.Component {
   getConfig(config) {
-    const { breakpoint, breakpoints } = this.context.grid;
+    const { breakpoint, breakpoints } = this.props.grid;
     return getConfig(breakpoints, breakpoint, config);
   }
 
@@ -69,9 +70,7 @@ export default class Column extends React.Component {
     return this.getSelfAlignment(this.getConfig(alignSelf));
   }
 
-  getGutterStyle() {
-    const { gutter } = this.context.grid;
-
+  getGutterStyle({ gutter }) {
     if (typeof gutter === 'undefined') {
       return [];
     }
@@ -81,7 +80,7 @@ export default class Column extends React.Component {
     };
   }
 
-  getWidthStyle(span) {
+  getWidthStyle(grid, span) {
     if (span === false || span === 0) {
       return;
     }
@@ -105,19 +104,17 @@ export default class Column extends React.Component {
     }
 
     if (typeof span === 'number') {
-      const { columns } = this.context.grid;
-
       return {
-        width: (100 * span / columns) + '%'
+        width: (100 * span / grid.columns) + '%'
       };
     }
 
-    return this.getWidthStyle(this.getConfig(span));
+    return this.getWidthStyle(grid, this.getConfig(span));
   }
 
   render() {
-    const { alignSelf, debug, style, span, ...props } = this.props;
-    const widthStyle = this.getWidthStyle(span);
+    const { alignSelf, debug, style, span, grid, ...props } = this.props;
+    const widthStyle = this.getWidthStyle(grid, span);
 
     if (typeof widthStyle === 'undefined') {
       return null;
@@ -125,7 +122,7 @@ export default class Column extends React.Component {
 
     const styles = [].concat(
       this.getBaseStyle(),
-      this.getGutterStyle(),
+      this.getGutterStyle(grid),
       this.getDebugStyle(debug),
       this.getSelfAlignment(alignSelf),
       widthStyle,
@@ -141,6 +138,7 @@ export default class Column extends React.Component {
 Column.displayName = 'Column';
 
 Column.propTypes = {
+  grid: PropTypes.object.isRequired,
   alignSelf: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
@@ -162,6 +160,4 @@ Column.defaultProps = {
   style: []
 };
 
-Column.contextTypes = {
-  grid: PropTypes.object.isRequired
-};
+export default withGrid(Column);

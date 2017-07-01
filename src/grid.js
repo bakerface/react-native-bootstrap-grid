@@ -27,56 +27,56 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactNative from 'react-native';
 import getBreakpoint from './get-breakpoint';
+import Context from './context';
 
 export default class Grid extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = { };
+    this.grid = new Context(props);
     this.handleLayoutChanged = this.handleLayoutChanged.bind(this);
   }
 
+  componentWillReceiveProps(props) {
+    this.grid.publish(props);
+  }
+
   handleLayoutChanged(e) {
-    const { onLayout } = this.props;
+    const {
+      breakpoints,
+      columns,
+      gutters,
+      maxContainerWidths,
+      onLayout
+    } = this.props;
+
     const { width } = e.nativeEvent.layout;
-    const breakpoint = getBreakpoint(this.props.breakpoints, width);
+    const breakpoint = getBreakpoint(breakpoints, width);
 
     if (typeof onLayout === 'function') {
       onLayout(e);
     }
 
-    this.setState({ breakpoint });
+    if (this.state.breakpoint !== breakpoint) {
+      this.setState({ breakpoint });
+
+      this.grid.publish({
+        breakpoint,
+        breakpoints,
+        columns,
+        gutter: gutters[breakpoint],
+        gutters,
+        maxContainerWidth: maxContainerWidths[breakpoint],
+        maxContainerWidths
+      });
+    }
   }
 
   getChildContext() {
-    const { breakpoint } = this.state;
-
-    if (breakpoint) {
-      return {
-        grid: {
-          breakpoint,
-          breakpoints: this.props.breakpoints,
-          columns: this.props.columns,
-          gutter: this.props.gutters[breakpoint],
-          gutters: this.props.gutters,
-          maxContainerWidths: this.props.maxContainerWidths,
-          maxContainerWidth: this.props.maxContainerWidths[breakpoint]
-        }
-      };
-    }
-
-    return { };
-  }
-
-  shouldComponentUpdate(props, state) {
-    return (
-      (this.props.breakpoints !== props.breakpoints) ||
-      (this.props.children !== props.children) ||
-      (this.props.columns !== props.columns) ||
-      (this.props.gutters !== props.gutters) ||
-      (this.props.maxContainerWidths !== props.maxContainerWidths) ||
-      (this.state.breakpoint !== state.breakpoint)
-    );
+    return {
+      grid: this.grid
+    };
   }
 
   render() {
@@ -140,13 +140,5 @@ Grid.defaultProps = {
 };
 
 Grid.childContextTypes = {
-  grid: PropTypes.shape({
-    breakpoint: PropTypes.string.isRequired,
-    breakpoints: PropTypes.object.isRequired,
-    columns: PropTypes.number.isRequired,
-    gutter: PropTypes.number.isRequired,
-    gutters: PropTypes.object.isRequired,
-    maxContainerWidths: PropTypes.object.isRequired,
-    maxContainerWidth: PropTypes.number
-  })
+  grid: PropTypes.object.isRequired
 };

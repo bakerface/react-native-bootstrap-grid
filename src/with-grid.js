@@ -25,64 +25,45 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactNative from 'react-native';
-import withGrid from './with-grid';
 
-class Container extends React.Component {
-  getBaseStyle() {
-    return {
-      width: '100%'
-    };
-  }
+export default function withGrid(Component) {
+  const name = (Component.displayName || Component.name || 'Component');
 
-  getMaxWidthStyle({ maxContainerWidth }, fluid) {
-    if (typeof maxContainerWidth === 'undefined' || fluid) {
-      return [];
+  class WithGrid extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+
+      this.state = {
+        grid: context.grid.props
+      };
+
+      this.onGridUpdated = this.onGridUpdated.bind(this);
     }
 
-    return {
-      alignSelf: 'center',
-      maxWidth: maxContainerWidth
-    };
-  }
-
-  getGutterStyle({ gutter }) {
-    if (typeof gutter === 'undefined') {
-      return [];
+    componentDidMount() {
+      this.context.grid.subscribe(this.onGridUpdated);
     }
 
-    return {
-      paddingHorizontal: gutter / 2
-    };
+    componentWillUnmount() {
+      this.context.grid.unsubscribe(this.onGridUpdated);
+    }
+
+    onGridUpdated(grid) {
+      this.setState({ grid });
+    }
+
+    render() {
+      return (
+        <Component grid={this.state.grid} {...this.props}/>
+      );
+    }
   }
 
-  render() {
-    const { fluid, style, grid, ...props } = this.props;
+  WithGrid.displayName = `WithGrid(${name})`;
 
-    const styles = [].concat(
-      this.getBaseStyle(),
-      this.getGutterStyle(grid),
-      this.getMaxWidthStyle(grid, fluid),
-      style
-    );
+  WithGrid.contextTypes = {
+    grid: PropTypes.object.isRequired
+  };
 
-    return (
-      <ReactNative.View style={styles} {...props}/>
-    );
-  }
+  return WithGrid;
 }
-
-Container.displayName = 'Container';
-
-Container.propTypes = {
-  grid: PropTypes.object.isRequired,
-  fluid: PropTypes.bool,
-  style: PropTypes.any
-};
-
-Container.defaultProps = {
-  fluid: undefined,
-  style: []
-};
-
-export default withGrid(Container);

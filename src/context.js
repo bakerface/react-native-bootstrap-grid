@@ -23,66 +23,58 @@
 
 'use strict';
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import ReactNative from 'react-native';
-import withGrid from './with-grid';
-
-class Container extends React.Component {
-  getBaseStyle() {
-    return {
-      width: '100%'
-    };
-  }
-
-  getMaxWidthStyle({ maxContainerWidth }, fluid) {
-    if (typeof maxContainerWidth === 'undefined' || fluid) {
-      return [];
-    }
-
-    return {
-      alignSelf: 'center',
-      maxWidth: maxContainerWidth
-    };
-  }
-
-  getGutterStyle({ gutter }) {
-    if (typeof gutter === 'undefined') {
-      return [];
-    }
-
-    return {
-      paddingHorizontal: gutter / 2
-    };
-  }
-
-  render() {
-    const { fluid, style, grid, ...props } = this.props;
-
-    const styles = [].concat(
-      this.getBaseStyle(),
-      this.getGutterStyle(grid),
-      this.getMaxWidthStyle(grid, fluid),
-      style
-    );
-
-    return (
-      <ReactNative.View style={styles} {...props}/>
-    );
-  }
+function getPropsLessChildren({ children, ...props }) {
+  return props;
 }
 
-Container.displayName = 'Container';
+function isEqual(a, b) {
+  if (a === b) {
+    return true;
+  }
 
-Container.propTypes = {
-  grid: PropTypes.object.isRequired,
-  fluid: PropTypes.bool,
-  style: PropTypes.any
-};
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  const count = keysA.length;
 
-Container.defaultProps = {
-  fluid: undefined,
-  style: []
-};
+  if (keysB.length !== count) {
+    return false;
+  }
 
-export default withGrid(Container);
+  for (let i = 0; i < count; i++) {
+    const key = keysA[i];
+
+    if (a[key] !== b[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export default class Context {
+  constructor(props) {
+    this.listeners = [];
+    this.props = getPropsLessChildren(props);
+  }
+
+  publish(properties) {
+    const props = getPropsLessChildren(properties);
+
+    if (!isEqual(this.props, props)) {
+      this.listeners.forEach(listener => listener(props));
+      this.props = props;
+    }
+  }
+
+  subscribe(listener) {
+    this.listeners.push(listener);
+
+    return {
+      remove: this.unsubscribe.bind(this, listener)
+    };
+  }
+
+  unsubscribe(listener) {
+    this.listeners = this.listeners.filter(l => l !== listener);
+  }
+}
