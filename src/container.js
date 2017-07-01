@@ -28,7 +28,7 @@ import PropTypes from 'prop-types';
 import ReactNative from 'react-native';
 import withGrid from './with-grid';
 
-class Container extends React.Component {
+class Container extends React.PureComponent {
   getBaseStyle() {
     return {
       width: '100%'

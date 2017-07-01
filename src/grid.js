@@ -29,7 +29,7 @@ import ReactNative from 'react-native';
 import getBreakpoint from './get-breakpoint';
 import Context from './context';
 
-export default class Grid extends React.Component {
+export default class Grid extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -58,9 +58,9 @@ export default class Grid extends React.Component {
       onLayout(e);
     }
 
-    if (this.state.breakpoint !== breakpoint) {
-      this.setState({ breakpoint });
+    this.setState({ isReady: true });
 
+    if (this.grid.props.breakpoint !== breakpoint) {
       this.grid.publish({
         breakpoint,
         breakpoints,
@@ -92,7 +92,7 @@ export default class Grid extends React.Component {
 
     return (
       <ReactNative.View onLayout={this.handleLayoutChanged} {...props}>
-        { this.state.breakpoint ? children : null }
+        { this.state.isReady ? children : null }
       </ReactNative.View>
     );
   }

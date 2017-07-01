@@ -26,7 +26,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class NoGutters extends React.Component {
+export default class NoGutters extends React.PureComponent {
   getChildContext() {
     const { gutter, ...grid } = this.context.grid;
     return { grid };

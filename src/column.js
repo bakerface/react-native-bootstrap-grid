@@ -30,7 +30,7 @@ import getConfig from './get-config';
 import getFlex from './get-flex';
 import withGrid from './with-grid';
 
-class Column extends React.Component {
+class Column extends React.PureComponent {
   getConfig(config) {
     const { breakpoint, breakpoints } = this.props.grid;
     return getConfig(breakpoints, breakpoint, config);
