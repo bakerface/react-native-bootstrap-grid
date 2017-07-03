@@ -24,51 +24,46 @@
 'use strict';
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import ReactNative from 'react-native';
-import getBreakpoint from './get-breakpoint';
+import PropTypes from 'prop-types';
 import Context from './context';
+import getBreakpoint from './get-breakpoint';
+import withWidth from './with-width';
 
-export default class Grid extends React.PureComponent {
+function sanitize(props = { }) {
+  return {
+    breakpoint: props.breakpoint,
+    breakpoints: props.breakpoints,
+    columns: props.columns,
+    gutter: props.gutter,
+    gutters: props.gutters,
+    maxContainerWidth: props.maxContainerWidth,
+    maxContainerWidths: props.maxContainerWidths
+  };
+}
+
+class Grid extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = { };
-    this.grid = new Context(props);
-    this.handleLayoutChanged = this.handleLayoutChanged.bind(this);
+    this.grid = new Context(sanitize(props));
   }
 
   componentWillReceiveProps(props) {
-    this.grid.publish(props);
-  }
+    const breakpoint = getBreakpoint(props.breakpoints, props.width);
 
-  handleLayoutChanged(e) {
-    const {
-      breakpoints,
-      columns,
-      gutters,
-      maxContainerWidths,
-      onLayout
-    } = this.props;
+    if (breakpoint !== this.state.breakpoint) {
+      this.setState({ breakpoint });
 
-    const { width } = e.nativeEvent.layout;
-    const breakpoint = getBreakpoint(breakpoints, width);
-
-    if (typeof onLayout === 'function') {
-      onLayout(e);
-    }
-
-    this.setState({ isReady: true });
-
-    if (this.grid.props.breakpoint !== breakpoint) {
       this.grid.publish({
         breakpoint,
-        breakpoints,
-        columns,
-        gutter: gutters[breakpoint],
-        gutters,
-        maxContainerWidth: maxContainerWidths[breakpoint],
-        maxContainerWidths
+        breakpoints: props.breakpoints,
+        columns: props.columns,
+        gutter: props.gutters[breakpoint],
+        gutters: props.gutters,
+        maxContainerWidth: props.maxContainerWidths[breakpoint],
+        maxContainerWidths: props.maxContainerWidths
       });
     }
   }
@@ -86,13 +81,13 @@ export default class Grid extends React.PureComponent {
       columns,
       gutters,
       maxContainerWidths,
-      onLayout,
+      width,
       ...props
     } = this.props;
 
     return (
-      <ReactNative.View onLayout={this.handleLayoutChanged} {...props}>
-        { this.state.isReady ? children : null }
+      <ReactNative.View {...props}>
+        { width ? children : null }
       </ReactNative.View>
     );
   }
@@ -106,8 +101,7 @@ Grid.propTypes = {
   columns: PropTypes.number,
   gutters: PropTypes.object,
   maxContainerWidths: PropTypes.object,
-  onLayout: PropTypes.func,
-  style: PropTypes.any
+  width: PropTypes.number
 };
 
 Grid.defaultProps = {
@@ -133,12 +127,11 @@ Grid.defaultProps = {
     lg: 960,
     xl: 1140
   },
-  onLayout: undefined,
-  style: {
-    flex: 1
-  }
+  width: undefined
 };
 
 Grid.childContextTypes = {
   grid: PropTypes.object.isRequired
 };
+
+export default withWidth(Grid);

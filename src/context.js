@@ -23,47 +23,15 @@
 
 'use strict';
 
-function getPropsLessChildren({ children, ...props }) {
-  return props;
-}
-
-function isEqual(a, b) {
-  if (a === b) {
-    return true;
-  }
-
-  const keysA = Object.keys(a);
-  const keysB = Object.keys(b);
-  const count = keysA.length;
-
-  if (keysB.length !== count) {
-    return false;
-  }
-
-  for (let i = 0; i < count; i++) {
-    const key = keysA[i];
-
-    if (a[key] !== b[key]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
 export default class Context {
   constructor(props) {
     this.listeners = [];
-    this.props = getPropsLessChildren(props);
+    this.props = props;
   }
 
-  publish(properties) {
-    const props = getPropsLessChildren(properties);
-
-    if (!isEqual(this.props, props)) {
-      this.listeners.forEach(listener => listener(props));
-      this.props = props;
-    }
+  publish(props) {
+    this.listeners.forEach(listener => listener(props));
+    this.props = props;
   }
 
   subscribe(listener) {

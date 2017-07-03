@@ -25,45 +25,44 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactNative from 'react-native';
 
-export default function withGrid(Component) {
+export default function withWidth(Component) {
   const name = (Component.displayName || Component.name || 'Component');
 
-  class WithGrid extends React.Component {
-    constructor(props, context) {
-      super(props, context);
+  class WithWidth extends React.PureComponent {
+    constructor(props) {
+      super(props);
 
-      this.onGridUpdated = this.onGridUpdated.bind(this);
-
-      this.state = {
-        grid: context.grid.props
-      };
+      this.state = { };
+      this.handleLayoutChanged = this.handleLayoutChanged.bind(this);
     }
 
-    componentDidMount() {
-      this.context.grid.subscribe(this.onGridUpdated);
-    }
-
-    componentWillUnmount() {
-      this.context.grid.unsubscribe(this.onGridUpdated);
-    }
-
-    onGridUpdated(grid) {
-      this.setState({ grid });
+    handleLayoutChanged(e) {
+      const { width } = e.nativeEvent.layout;
+      this.setState({ width });
     }
 
     render() {
+      const { style, ...props } = this.props;
+
       return (
-        <Component grid={this.state.grid} {...this.props}/>
+        <ReactNative.View style={style} onLayout={this.handleLayoutChanged}>
+          <Component style={{ flex: 1 }} width={this.state.width} {...props}/>
+        </ReactNative.View>
       );
     }
   }
 
-  WithGrid.displayName = `WithGrid(${name})`;
+  WithWidth.displayName = `WithWidth(${name})`;
 
-  WithGrid.contextTypes = {
-    grid: PropTypes.object.isRequired
+  WithWidth.propTypes = {
+    style: PropTypes.any
   };
 
-  return WithGrid;
+  WithWidth.defaultProps = {
+    style: undefined
+  };
+
+  return WithWidth;
 }
