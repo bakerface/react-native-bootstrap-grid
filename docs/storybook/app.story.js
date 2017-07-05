@@ -86,7 +86,7 @@ function Navbar({ children, style, ...props }) {
 
 Navbar.propTypes = {
   children: PropTypes.any,
-  style: PropTypes.style
+  style: PropTypes.any
 };
 
 Navbar.defaultProps = {
@@ -108,7 +108,7 @@ function Block({ children, style, ...props }) {
 
 Block.propTypes = {
   children: PropTypes.any,
-  style: PropTypes.style
+  style: PropTypes.any
 };
 
 Block.defaultProps = {
@@ -127,7 +127,7 @@ function Title({ style, ...props }) {
 }
 
 Title.propTypes = {
-  style: PropTypes.style
+  style: PropTypes.any
 };
 
 Title.defaultProps = {
@@ -145,7 +145,7 @@ function Banner({ style, ...props }) {
 }
 
 Banner.propTypes = {
-  style: PropTypes.style
+  style: PropTypes.any
 };
 
 Banner.defaultProps = {
@@ -163,7 +163,7 @@ function NavLink({ style, ...props }) {
 }
 
 NavLink.propTypes = {
-  style: PropTypes.style
+  style: PropTypes.any
 };
 
 NavLink.defaultProps = {
@@ -181,7 +181,7 @@ function Card({ style, ...props }) {
 }
 
 Card.propTypes = {
-  style: PropTypes.style
+  style: PropTypes.any
 };
 
 Card.defaultProps = {

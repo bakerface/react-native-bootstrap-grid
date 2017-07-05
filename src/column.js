@@ -44,18 +44,6 @@ class Column extends React.PureComponent {
     };
   }
 
-  getDebugStyle(debug) {
-    if (debug) {
-      return {
-        backgroundColor: '#eee',
-        borderColor: '#bbb',
-        borderWidth: 1
-      };
-    }
-
-    return [];
-  }
-
   getSelfAlignment(alignSelf) {
     if (typeof alignSelf === 'undefined') {
       return [];
@@ -80,7 +68,7 @@ class Column extends React.PureComponent {
     };
   }
 
-  getWidthStyle(grid, span) {
+  getSpanStyle(grid, span) {
     if (span === false || span === 0) {
       return;
     }
@@ -109,23 +97,37 @@ class Column extends React.PureComponent {
       };
     }
 
-    return this.getWidthStyle(grid, this.getConfig(span));
+    return this.getSpanStyle(grid, this.getConfig(span));
+  }
+
+  getOffsetStyle(grid, offset) {
+    if (offset) {
+      if (typeof offset === 'number') {
+        return {
+          marginLeft: (100 * offset / grid.columns) + '%'
+        };
+      }
+
+      if (typeof offset === 'object') {
+        return this.getOffsetStyle(grid, this.getConfig(offset));
+      }
+    }
   }
 
   render() {
-    const { alignSelf, debug, style, span, grid, ...props } = this.props;
-    const widthStyle = this.getWidthStyle(grid, span);
+    const { alignSelf, offset, style, span, grid, ...props } = this.props;
+    const spanStyle = this.getSpanStyle(grid, span);
 
-    if (typeof widthStyle === 'undefined') {
+    if (typeof spanStyle === 'undefined') {
       return null;
     }
 
     const styles = [].concat(
       this.getBaseStyle(),
       this.getGutterStyle(grid),
-      this.getDebugStyle(debug),
       this.getSelfAlignment(alignSelf),
-      widthStyle,
+      this.getOffsetStyle(grid, offset),
+      spanStyle,
       style
     );
 
@@ -143,7 +145,10 @@ Column.propTypes = {
     PropTypes.string,
     PropTypes.object
   ]),
-  debug: PropTypes.bool,
+  offset: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.object
+  ]),
   span: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.number,
@@ -155,7 +160,7 @@ Column.propTypes = {
 
 Column.defaultProps = {
   alignSelf: undefined,
-  debug: undefined,
+  offset: undefined,
   span: undefined,
   style: []
 };
