@@ -113,7 +113,17 @@ class Column extends React.PureComponent {
   }
 
   render() {
-    const { alignSelf, offset, style, span, grid, ...props } = this.props;
+    const {
+      alignSelf,
+      children,
+      component,
+      offset,
+      style,
+      span,
+      grid,
+      ...props
+    } = this.props;
+
     const spanStyle = this.getSpanStyle(grid, span);
 
     if (typeof spanStyle === 'undefined') {
@@ -129,9 +139,7 @@ class Column extends React.PureComponent {
       style
     );
 
-    return (
-      <ReactNative.View style={styles} {...props}/>
-    );
+    return React.createElement(component, { style: styles, ...props }, children);
   }
 }
 
@@ -143,6 +151,8 @@ Column.propTypes = {
     PropTypes.string,
     PropTypes.object
   ]),
+  children: PropTypes.node,
+  component: PropTypes.func,
   offset: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.object
@@ -158,6 +168,8 @@ Column.propTypes = {
 
 Column.defaultProps = {
   alignSelf: undefined,
+  children: undefined,
+  component: ReactNative.View,
   offset: undefined,
   span: undefined,
   style: []

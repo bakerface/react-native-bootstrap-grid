@@ -79,17 +79,14 @@ class Grid extends React.PureComponent {
       breakpoints,
       children,
       columns,
+      component,
       gutters,
       maxContainerWidths,
       width,
       ...props
     } = this.props;
 
-    return (
-      <ReactNative.View {...props}>
-        { width ? children : null }
-      </ReactNative.View>
-    );
+    return React.createElement(component, props, width ? children : null);
   }
 }
 
@@ -99,6 +96,7 @@ Grid.propTypes = {
   breakpoints: PropTypes.object,
   children: PropTypes.node,
   columns: PropTypes.number,
+  component: PropTypes.func,
   gutters: PropTypes.object,
   maxContainerWidths: PropTypes.object,
   width: PropTypes.number
@@ -114,6 +112,7 @@ Grid.defaultProps = {
   },
   children: null,
   columns: 12,
+  component: ReactNative.View,
   gutters: {
     xs: 30,
     sm: 30,

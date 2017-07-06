@@ -57,7 +57,7 @@ class Container extends React.PureComponent {
   }
 
   render() {
-    const { fluid, style, grid, ...props } = this.props;
+    const { children, component, fluid, style, grid, ...props } = this.props;
 
     const styles = [].concat(
       this.getBaseStyle(),
@@ -66,21 +66,23 @@ class Container extends React.PureComponent {
       style
     );
 
-    return (
-      <ReactNative.View style={styles} {...props}/>
-    );
+    return React.createElement(component, { style: styles, ...props }, children);
   }
 }
 
 Container.displayName = 'Container';
 
 Container.propTypes = {
+  children: PropTypes.node,
+  component: PropTypes.func,
   grid: PropTypes.object.isRequired,
   fluid: PropTypes.bool,
   style: PropTypes.any
 };
 
 Container.defaultProps = {
+  children: undefined,
+  component: ReactNative.View,
   fluid: undefined,
   style: []
 };

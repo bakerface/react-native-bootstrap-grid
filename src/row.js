@@ -82,7 +82,15 @@ class Row extends React.PureComponent {
   }
 
   render() {
-    const { alignItems, justifyContent, style, grid, ...props } = this.props;
+    const {
+      alignItems,
+      children,
+      component,
+      justifyContent,
+      grid,
+      style,
+      ...props
+    } = this.props;
 
     const styles = [].concat(
       this.getBaseStyle(),
@@ -92,9 +100,7 @@ class Row extends React.PureComponent {
       style
     );
 
-    return (
-      <ReactNative.View style={styles} {...props}/>
-    );
+    return React.createElement(component, { style: styles, ...props }, children);
   }
 }
 
@@ -106,6 +112,8 @@ Row.propTypes = {
     PropTypes.string,
     PropTypes.object
   ]),
+  children: PropTypes.node,
+  component: PropTypes.func,
   justifyContent: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
@@ -115,6 +123,8 @@ Row.propTypes = {
 
 Row.defaultProps = {
   alignItems: undefined,
+  children: undefined,
+  component: ReactNative.View,
   justifyContent: undefined,
   style: []
 };
