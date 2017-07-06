@@ -75,7 +75,7 @@ class Column extends React.PureComponent {
 
     if (span === true) {
       return {
-        flexGrow: 1
+        flex: 1
       };
     }
 
