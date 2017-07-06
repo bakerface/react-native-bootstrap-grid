@@ -25,7 +25,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactNative from 'react-native';
 
 export default function withWidth(Component) {
   const name = (Component.displayName || Component.name || 'Component');
@@ -39,17 +38,22 @@ export default function withWidth(Component) {
     }
 
     handleLayoutChanged(e) {
-      const { width } = e.nativeEvent.layout;
-      this.setState({ width });
+      if (this.props.onLayout) {
+        this.props.onLayout(e);
+      }
+
+      this.setState({
+        width: e.nativeEvent.layout.width
+      });
     }
 
     render() {
-      const { style, ...props } = this.props;
-
       return (
-        <ReactNative.View style={style} onLayout={this.handleLayoutChanged}>
-          <Component style={{ flex: 1 }} width={this.state.width} {...props}/>
-        </ReactNative.View>
+        <Component
+          {...this.props}
+          onLayout={this.handleLayoutChanged}
+          width={this.state.width}
+          />
       );
     }
   }
@@ -57,11 +61,11 @@ export default function withWidth(Component) {
   WithWidth.displayName = `WithWidth(${name})`;
 
   WithWidth.propTypes = {
-    style: PropTypes.any
+    onLayout: PropTypes.func
   };
 
   WithWidth.defaultProps = {
-    style: undefined
+    onLayout: undefined
   };
 
   return WithWidth;
