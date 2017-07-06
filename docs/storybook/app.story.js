@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5
   },
   scrollView: {
-    flexGrow: 1
+    flex: 1
   },
   footer: {
     paddingVertical: 5
@@ -191,7 +191,7 @@ Card.defaultProps = {
 class App extends React.Component {
   render() {
     return (
-      <Grid style={styles.grid}>
+      <Grid style={StyleSheet.absoluteFill}>
         <Container fluid style={styles.header}>
           <Row>
             <Navbar/>

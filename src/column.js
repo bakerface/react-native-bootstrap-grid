@@ -86,9 +86,7 @@ class Column extends React.PureComponent {
     }
 
     if (typeof span === 'string') {
-      return {
-        width: span
-      };
+      return null;
     }
 
     if (typeof span === 'number') {
